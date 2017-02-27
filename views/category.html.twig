@@ -16,25 +16,22 @@
 
     <h4>Add a task to this category:</h4>
 
-    {% for category in categories %}
-        <li>
-            <a href="/categories/{{ category.getId}}">{{ category.getName }}:</a>
-            <a href="/categories/{{ category.getId}}/edit">Edit this category</a>
-        </li>
-
-    {% endfor %}
-
-
-    <form action='/categories' method='post'>
-        <label for='name'>Category name</label>
-        <input id='name' name='name' type='text'>
-
-        <button type='submit'>Add category</button>
-    </form>
-    <form action='/delete_categories' method='post'>
-        <button type='submit'>Clear</button>
+    <form action='/add_tasks' method='post'>
+        <input id="category_id" name="category_id" type="hidden" value="{{ category.getId }}">
+        <label for="task_id">Select a task</label>
+        {% if all_tasks is not empty %}
+            <select id='task_id' name='task_id' type='text'>
+              {% for task in all_tasks %}
+                <option value="{{ task.getId }}"> {{ task.getDescription }} </option>
+              {% endfor %}
+            </select>
+        {% else %}
+        <p>No Tasks</p>
+        {% endif %}
+        <button type='submit'>Add task</button>
     </form>
 
+    <p><a href="/categories/{{ category.getId }}/edit">Edit this category</a></p>
 
     <p><a href='/'>Home</a></p>
 </body>
