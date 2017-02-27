@@ -3,40 +3,47 @@
     <title>To Do List</title>
 </head>
 <body>
-    <h1><a href="/categories/{{ category.getId }}/edit">Edit {{ category.getName }}</a></h1>
+    <h1>{{ category.getName }}</h1>
 
-    <form action='/delete/tasks' method='post'>
-        <input name='_method' type='hidden' value='delete'>
-        {% if tasks is not empty %}
-            <p>Here are the tasks:</p>
-            <ul>
-                {% for task in tasks %}
-                    <li>Task: {{ task.getDescription }} Due by: {{ task.getDueDate }}
-                        <button
-                            type='submit'
-                            name='delete_one_task_button'
-                            value='{{ task.getId }}'
-                        >
-                            Delete
-                        </button>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </form>
+    {% if tasks is not empty %}
+        <p>Here are the tasks for this category:</p>
+        <ul>
+            {% for task in tasks %}
+                <li>{{ task.getDescription }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
-    <h4>Add a task</h4>
+    <h4>Add a task to this category:</h4>
 
-    <form action='/post/tasks' method='post'>
-        <input id="category_id" name="category_id" type="hidden" value="{{ category.getId() }}">
-        <label for='description'>Task Description</label>
-        <input id='description' name='description' type='text'>
-
-        <label for='due_date'>Date Due</label>
-        <input name='due_date' type='date'>
+    <form action='/add_tasks' method='post'>
+        <input id="category_id" name="category_id" type="hidden" value="{{ category.getId }}">
+        <label for="task_id">Select a task</label>
+        <select id='task_id' name='task_id' type='text'>
+          {% for task in all_tasks %}
+            <option value="{{ task.getId }}"> {{ task.getDescription }} </option>
+          {% endfor %}
+        </select>
 
         <button type='submit'>Add task</button>
     </form>
+
+    {% for category in categories %}
+
+        <p>{{ category.getName }}:<a href="/categories/{{ category.getId }}/edit">Edit this category</a></p>
+    {% endfor %}
+
+
+    <form action='/categories' method='post'>
+        <label for='name'>Category name</label>
+        <input id='name' name='name' type='text'>
+
+        <button type='submit'>Add category</button>
+    </form>
+    <form action='/delete_categories' method='post'>
+        <button type='submit'>Clear</button>
+    </form>
+
 
     <p><a href='/'>Home</a></p>
 </body>
