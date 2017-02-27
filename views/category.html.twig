@@ -20,6 +20,7 @@
         <input id="category_id" name="category_id" type="hidden" value="{{ category.getId }}">
         <label for="task_id">Select a task</label>
         {% if all_tasks is not empty %}
+        <button type='submit'>Add task</button>
             <select id='task_id' name='task_id' type='text'>
               {% for task in all_tasks %}
                 <option value="{{ task.getId }}"> {{ task.getDescription }} </option>
@@ -28,10 +29,9 @@
         {% else %}
         <p>No Tasks</p>
         {% endif %}
-        <button type='submit'>Add task</button>
     </form>
 
-    <p><a href="/categories/{{ category.getId }}/edit">Edit this category</a></p>
+    <p><a href="/category/{{ category.getId }}/edit">Edit this category</a></p>
 
     <p><a href='/'>Home</a></p>
 </body>

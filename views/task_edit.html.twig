@@ -2,14 +2,14 @@
 <body>
 <h1>Update {{ task.getDescription }}</h1>
 
-<form action="/tasks/{{ task.getId }}/edit" method="post">
+<form action="/task/{{ task.getId }}/edit" method="post">
   <input name="_method" type="hidden" value="patch">
   <label for="name">Rename your task</label>
   <input id="name" name="name" type="text">
   <button type="submit">Update</button>
 </form>
 
-<form action="/tasks/{{ task.getId }}" method="post">
+<form action="/task/{{ task.getId }}" method="post">
   <input name="_method" type="hidden" value="delete">
   <button type="submit">Delete this task</button>
 </form>

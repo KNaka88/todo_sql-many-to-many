@@ -59,8 +59,6 @@
 
 
 
-
-
 //CATEGORIES
     //GET
     $app->get("/categories", function() use ($app) {
@@ -105,16 +103,25 @@
 
 
     //EDIT TASKS
-    $app->get("/tasks/{id}/edit", function($id) use ($app) {
+    $app->get("/task/{id}/edit", function($id) use ($app) {
         $task = Task::find($id);
-        return $app['twig']->render('tasks_edit.html.twig', array('task' => $task));
+        return $app['twig']->render('task_edit.html.twig', array('task' => $task));
+    });
+
+    $app->patch("/task/{id}/edit", function($id) use ($app) {
+        $description = $_POST['name'];
+        $task = Task::find($id);
+        if ($description) {
+            $task->update($description);
+        }
+        return $app['twig']->render('tasks.html.twig', array('tasks' => Task::getAll()));
     });
 
 
     //DELETE
     $app->post("/delete_tasks", function() use ($app) {
         Task::deleteAll();
-        return $app['twig']->render('tasks.html.twig');
+        return $app['twig']->render('tasks.html.twig', array('tasks' => Task::getAll()));
     });
 
     $app->post("/delete_categories", function() use ($app) {
