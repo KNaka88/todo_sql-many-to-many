@@ -36,7 +36,7 @@
     });
     //POST
     $app->post("/tasks", function() use ($app) {
-        $description = $_POST['description'];
+        $description = filter_var($_POST['description'], FILTER_SANITIZE_MAGIC_QUOTES);
         $task = new Task($description);
         $task->save();
         return $app['twig']->render('tasks.html.twig', array('tasks' => Task::getAll()));
@@ -79,7 +79,8 @@
     });
     //POST
     $app->post("/categories", function() use ($app) {
-        $category = new Category($_POST['name']);
+        $category = new Category(filter_var($_POST['name'], FILTER_SANITIZE_MAGIC_QUOTES));
+
         $category->save();
         return $app['twig']->render('categories.html.twig', array('categories' => Category::getAll()));
     });
