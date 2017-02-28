@@ -4,12 +4,14 @@
         private $description;
         private $complete;
         private $id;
+        private $due_date;
 
-        function __construct($description, $complete = 0, $id = null)
+        function __construct($description, $complete = 0, $id = null, $due_date)
         {
             $this->description = $description;
             $this->complete = $complete;
             $this->id = $id;
+            $this->due_date = $due_date;
         }
 
         function getComplete()
@@ -20,6 +22,16 @@
         function setComplete()
         {
             return $this->complete = 1;
+        }
+
+        function getDueDate()
+        {
+            return $this->due_date;
+        }
+
+        function setDueDAte($new_due_date)
+        {
+            $this->due_date = $new_due_date;
         }
 
         function setDescription($new_description)
@@ -39,7 +51,7 @@
 
         function save()
         {
-            $GLOBALS['DB']->exec("INSERT INTO tasks (description, complete) VALUES ('{$this->getDescription()}', '{$this->getComplete()}')");
+            $GLOBALS['DB']->exec("INSERT INTO tasks (description, complete, due_date) VALUES ('{$this->getDescription()}', '{$this->getComplete()}', '{$this->getDueDate()}')");
             $this->id = $GLOBALS['DB']->lastInsertId();
         }
 
@@ -51,7 +63,8 @@
                 $description = $task['description'];
                 $complete = $task['complete'];
                 $id = $task['id'];
-                $new_task = new Task($description, $complete, $id);
+                $due_date = $task['due_date'];
+                $new_task = new Task($description, $complete, $id, $due_date);
                 array_push($tasks, $new_task);
             }
             return $tasks;
@@ -65,7 +78,8 @@
                 $description = $task['description'];
                 $complete = $task['complete'];
                 $id = $task['id'];
-                $new_task = new Task($description, $complete, $id);
+                $due_date = $task['due_date'];
+                $new_task = new Task($description, $complete, $id, $due_date);
                 array_push($tasks, $new_task);
             }
             return $tasks;
@@ -94,7 +108,6 @@
             $GLOBALS['DB']->exec("UPDATE tasks SET description = '{$new_description}' WHERE id = {$this->getId()};");
             $this->setDescription($new_description);
         }
-
 
         function statusUpdate()
         {
@@ -130,6 +143,20 @@
             }
 
             return $categories;
+        }
+
+        static function getOverDue($today){
+            $returned_tasks = $GLOBALS['DB']->query("SELECT * FROM tasks WHERE due_date < '{$today}'");
+            $tasks = array();
+            foreach($returned_tasks as $task) {
+                $description = $task['description'];
+                $complete = $task['complete'];
+                $id = $task['id'];
+                $due_date = $task['due_date'];
+                $new_task = new Task($description, $complete, $id, $due_date);
+                array_push($tasks, $new_task);
+            }
+            return $tasks;
         }
     }
 ?>

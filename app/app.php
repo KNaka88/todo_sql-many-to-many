@@ -32,20 +32,24 @@
 //TASKS
     //GET
     $app->get("/tasks", function() use ($app) {
-        return $app['twig']->render('tasks.html.twig', array('tasks' => Task::getAll(), 'all_categories' => Category::getAll()));
+        $today = date("Y-m-d");
+        return $app['twig']->render('tasks.html.twig', array('tasks' => Task::getAll(), 'all_categories' => Category::getAll(), 'overdues'=>Task::getOverDue($today)));
     });
     //POST
     $app->post("/tasks", function() use ($app) {
+        $today = date("Y-m-d");
         $description = filter_var($_POST['description'], FILTER_SANITIZE_MAGIC_QUOTES);
-        $task = new Task($description);
+        $due_date = $_POST['due_date'];
+        $task = new Task($description, 0, null, $due_date);
         $task->save();
-        return $app['twig']->render('tasks.html.twig', array('tasks' => Task::getAll()));
+        return $app['twig']->render('tasks.html.twig', array('tasks' => Task::getAll(), 'overdues'=>Task::getOverDue($today)));
     });
 
     //Specific Task GET
     $app->get("/task/{id}", function($id) use ($app) {
+        $today = date("Y-m-d");
         $task = Task::find($id);
-        return $app['twig']->render('task.html.twig', array('task' => $task, 'categories' => $task->getCategories(), 'all_categories' => Category::getAll()));
+        return $app['twig']->render('task.html.twig', array('task' => $task, 'categories' => $task->getCategories(), 'all_categories' => Category::getAll(), 'overdues'=>Task::getOverDue($today)));
     });
 
     //Specific POST
