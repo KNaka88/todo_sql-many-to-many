@@ -42,7 +42,7 @@
         return $app['twig']->render('tasks.html.twig', array('tasks' => Task::getAll()));
     });
 
-    //Specifict Task GET
+    //Specific Task GET
     $app->get("/task/{id}", function($id) use ($app) {
         $task = Task::find($id);
         return $app['twig']->render('task.html.twig', array('task' => $task, 'categories' => $task->getCategories(), 'all_categories' => Category::getAll()));
@@ -56,6 +56,19 @@
         return $app['twig']->render('tasks.html.twig', array('task' => $task, 'tasks' => Task::getAll(), 'categories' => $task->getCategories(), 'all_categories' => Category::getAll()));
     });
 
+    //Complete get
+    $app->get("/complete/{id}", function($id) use ($app){
+        $task = Task::find($id);
+        $task->setComplete();
+        $task->statusUpdate();
+        var_dump(Task::getAll());
+        return $app['twig']->render('tasks.html.twig', array('tasks' => Task::getAll()));
+    });
+
+    $app->get("/completed", function() use ($app) {
+        $completed_tasks = Task::getAllCompleted();
+        return $app['twig']->render('complete_tasks.html.twig', array("completed_tasks" => $completed_tasks));
+    });
 
 
 

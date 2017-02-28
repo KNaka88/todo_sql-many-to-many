@@ -9,6 +9,7 @@
             <li>
                 <a href="/task/{{ task.getId }}">{{ task.getDescription }}:</a>
                 <a href="/task/{{ task.getId }}/edit">Edit this task</a>
+                <a href="/complete/{{task.getId }}"><button name="complete">Done</button></a>
             </li>
         {% endfor %}
     {% endif %}

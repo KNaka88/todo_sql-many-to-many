@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Completed Tasks</title>
+    </head>
+    <body>
+        <h4>Your complete tasks:</h4>
+
+        {% if completed_tasks is not empty %}
+        <ul>
+            {% for task in completed_tasks %}
+                <li>{{ task.getDescription}}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <a href='/'>Home</a>
+    </body>
+</html>

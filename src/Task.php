@@ -2,12 +2,24 @@
     class Task
     {
         private $description;
+        private $complete;
         private $id;
 
-        function __construct($description, $id = null)
+        function __construct($description, $complete = 0, $id = null)
         {
             $this->description = $description;
+            $this->complete = $complete;
             $this->id = $id;
+        }
+
+        function getComplete()
+        {
+            return $this->complete;
+        }
+
+        function setComplete()
+        {
+            return $this->complete = 1;
         }
 
         function setDescription($new_description)
@@ -27,18 +39,33 @@
 
         function save()
         {
-            $GLOBALS['DB']->exec("INSERT INTO tasks (description) VALUES ('{$this->getDescription()}')");
+            $GLOBALS['DB']->exec("INSERT INTO tasks (description, complete) VALUES ('{$this->getDescription()}', '{$this->getComplete()}')");
             $this->id = $GLOBALS['DB']->lastInsertId();
         }
 
         static function getAll()
         {
-            $returned_tasks = $GLOBALS['DB']->query("SELECT * FROM tasks;");
+            $returned_tasks = $GLOBALS['DB']->query("SELECT * FROM tasks WHERE complete = 0;");
             $tasks = array();
             foreach($returned_tasks as $task) {
                 $description = $task['description'];
+                $complete = $task['complete'];
                 $id = $task['id'];
-                $new_task = new Task($description, $id);
+                $new_task = new Task($description, $complete, $id);
+                array_push($tasks, $new_task);
+            }
+            return $tasks;
+        }
+
+        static function getAllCompleted()
+        {
+            $returned_tasks= $GLOBALS['DB']->query("SELECT * FROM tasks WHERE complete = 1;");
+            $tasks = array();
+            foreach($returned_tasks as $task) {
+                $description = $task['description'];
+                $complete = $task['complete'];
+                $id = $task['id'];
+                $new_task = new Task($description, $complete, $id);
                 array_push($tasks, $new_task);
             }
             return $tasks;
@@ -46,7 +73,7 @@
 
         static function deleteAll()
         {
-          $GLOBALS['DB']->exec("DELETE FROM tasks;");
+          $GLOBALS['DB']->exec("DELETE FROM tasks WHERE complete = 0;");
         }
 
         static function find($search_id)
@@ -66,6 +93,12 @@
         {
             $GLOBALS['DB']->exec("UPDATE tasks SET description = '{$new_description}' WHERE id = {$this->getId()};");
             $this->setDescription($new_description);
+        }
+
+
+        function statusUpdate()
+        {
+            $GLOBALS['DB']->exec("UPDATE tasks SET complete = 1 WHERE id = {$this->getId()};");
         }
 
         function delete()
